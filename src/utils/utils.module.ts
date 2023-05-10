@@ -1,4 +1,5 @@
 import { Global, Module } from '@nestjs/common';
+import { CacheKeyGeneratorUtil } from './cache-key-generator.util';
 import { DataConverterUtil } from './data-convertor.util';
 import { EncryptionUtil } from './encryption.util';
 import { GeneratorUtil } from './generator.util';
@@ -15,6 +16,7 @@ import { RetryFuncUtil } from './retry.util';
     HashFuncUtil,
     DataConverterUtil,
     HttpRequestTransformUtil,
+    CacheKeyGeneratorUtil,
   ],
   exports: [
     EncryptionUtil,
@@ -23,6 +25,7 @@ import { RetryFuncUtil } from './retry.util';
     HashFuncUtil,
     DataConverterUtil,
     HttpRequestTransformUtil,
+    CacheKeyGeneratorUtil,
   ],
 })
 export class UtilsModule {}
