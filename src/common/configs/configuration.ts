@@ -21,6 +21,7 @@ export const configuration = () => {
     AWS_CLOUDWATCH_ACCESS_KEY_ID: Yup.string().optional(),
     AWS_CLOUDWATCH_SECRET_ACCESS_KEY: Yup.string().optional(),
     AWS_CLOUDWATCH_REGION: Yup.string().optional(),
+    AWS_CLOUDWATCH_LOG_GROUP: Yup.string().optional(),
   });
 
   const config = {
@@ -44,6 +45,7 @@ export const configuration = () => {
     AWS_CLOUDWATCH_SECRET_ACCESS_KEY:
       process.env.AWS_CLOUDWATCH_SECRET_ACCESS_KEY,
     AWS_CLOUDWATCH_REGION: process.env.AWS_CLOUDWATCH_REGION,
+    AWS_CLOUDWATCH_LOG_GROUP: process.env.AWS_CLOUDWATCH_LOG_GROUP,
   };
 
   const result = configSchema.validateSync(config);

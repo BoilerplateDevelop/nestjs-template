@@ -36,7 +36,7 @@ export class WinstonService {
         level: 'info',
         name: 'Cloudwatch Logs',
         cloudWatchLogs: new AWS.CloudWatchLogs(),
-        logGroupName: '',
+        logGroupName: configService.get('AWS_CLOUDWATCH_LOG_GROUP'),
         logStreamName: configService.get('NODE_ENV'),
         createLogGroup: false,
         createLogStream: true,
