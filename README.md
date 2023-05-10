@@ -26,13 +26,6 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Create boilderplate
-
-```bash
-$ npx @sch/create-nestjs <folder_name>
-```
-
-
 ## Installation
 
 ```bash
