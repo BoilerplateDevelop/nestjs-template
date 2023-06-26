@@ -1,10 +1,18 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { UserRegisterDto } from './dto/register.dto';
 import { UserService } from './user.service';
 import { HashFuncUtil } from '../../utils/hash.util';
-import { ResponseSchema, ResponseStatus } from 'src/common/types/response.type';
 import { Public } from '../../common/decorators/public.decorator';
-import { User } from 'src/database/entities/user.entity';
+import { EStatus, generateResponse } from 'src/common/generic.response';
+import { Response } from 'express';
 
 @Controller()
 export class UserController {
@@ -15,31 +23,26 @@ export class UserController {
 
   @Public()
   @Post('/register')
-  async register(
-    @Body() body: UserRegisterDto,
-  ): Promise<ResponseSchema<Partial<User>>> {
+  async register(@Res() res: Response, @Body() body: UserRegisterDto) {
     const hashedPassword = await this.hashFuncUtil.hashCode(body.password);
-
     const result = await this.userService.create({
       username: body.username,
       password: hashedPassword,
     });
 
-    return {
-      status: ResponseStatus.SUCCESS,
-      data: result.raw?.[0],
-    };
+    return res
+      .status(HttpStatus.OK)
+      .send(generateResponse(EStatus.SUCCESS, result.raw?.[0]));
   }
 
   @Get()
-  async findUser(@Req() req): Promise<ResponseSchema<Omit<User, 'password'>>> {
+  async findUser(@Req() req, @Res() res) {
     const user = await this.userService.findOne({
       username: req.user.username,
     });
 
-    return {
-      status: ResponseStatus.SUCCESS,
-      data: user,
-    };
+    return res
+      .status(HttpStatus.OK)
+      .send(generateResponse(EStatus.SUCCESS, user));
   }
 }

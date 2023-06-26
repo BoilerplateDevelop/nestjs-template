@@ -20,7 +20,7 @@ import { WinstonModule } from 'nest-winston';
 import { WinstonService } from './common/configs/winston';
 import { AuthModule } from './modules/auth/auth.module';
 import { UtilsModule } from './utils/utils.module';
-import { AllExceptionFilter } from './common/filters/all-exception.filter';
+import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -105,7 +105,7 @@ import { UserModule } from './modules/user/user.module';
       useClass: JwtAuthGuard,
     },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
-    { provide: APP_FILTER, useClass: AllExceptionFilter },
+    { provide: APP_FILTER, useClass: AllExceptionsFilter },
   ],
 })
 export class AppModule {}

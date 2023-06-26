@@ -1,30 +1,33 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LocalAuthGuard } from 'src/common/guards/local-auth.guard';
 import { AuthService } from './auth.service';
-import {
-  ResponseSchema,
-  ResponseStatus,
-} from '../../common/types/response.type';
+import { generateResponse } from 'src/common/generic.response';
+import { EStatus } from '../../common/generic.response';
 
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('validateToken')
-  validateToken(): ResponseSchema<null> {
+  validateToken(@Res() res) {
     // already validate before handler, in JWT stagery
-    return {
-      status: ResponseStatus.SUCCESS,
-      data: null,
-      message: 'Valid token',
-    };
+    return res
+      .status(HttpStatus.OK)
+      .send(generateResponse(EStatus.SUCCESS, null));
   }
 
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Req() req): ResponseSchema<{ accessToken: string }> {
+  login(@Req() req, @Res() res) {
     const user = req.user;
 
     const accessToken = this.authService.generateJWT({
@@ -32,11 +35,10 @@ export class AuthController {
       username: user.username,
     });
 
-    return {
-      status: ResponseStatus.SUCCESS,
-      data: {
+    return res.status(HttpStatus.OK).send(
+      generateResponse(EStatus.SUCCESS, {
         accessToken,
-      },
-    };
+      }),
+    );
   }
 }
