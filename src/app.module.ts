@@ -18,9 +18,10 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { WinstonModule } from 'nest-winston';
 import { WinstonService } from './common/configs/winston';
-import { AuthModule } from './modules/auth/auth.module';
 import { UtilsModule } from './utils/utils.module';
 import { AllExceptionsFilter } from './common/filters/all-exception.filter';
+import { TransformInterceptor } from './common/interceptors/response.interceptor';
+import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -85,16 +86,6 @@ import { UserModule } from './modules/user/user.module';
     UtilsModule,
     AuthModule,
     UserModule,
-    RouterModule.register([
-      {
-        path: 'auth',
-        module: AuthModule,
-      },
-      {
-        path: 'user',
-        module: UserModule,
-      },
-    ]),
   ],
   controllers: [AppController],
   providers: [
@@ -104,8 +95,9 @@ import { UserModule } from './modules/user/user.module';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
-    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
   ],
 })
 export class AppModule {}

@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { Observable, map, of } from 'rxjs';
+import { CacheService } from 'src/modules/cache/cache.service';
 import { CacheKeyGeneratorUtil } from 'src/utils/cache-key-generator.util';
-import { CacheService } from '../../modules/cache/cache.service';
 
 /**
  * Set Cache TTL

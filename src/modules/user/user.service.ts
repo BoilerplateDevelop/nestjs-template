@@ -24,6 +24,7 @@ export class UserService {
       .where({
         ...condition,
       })
+      .select(['users.id', 'users.username', 'users.status'])
       .getOne();
   }
 

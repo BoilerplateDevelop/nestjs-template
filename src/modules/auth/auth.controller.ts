@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   HttpStatus,
   Post,
@@ -6,28 +7,33 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiGeneralResponse } from 'src/common/decorators/apiGeneralResponse.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LocalAuthGuard } from 'src/common/guards/local-auth.guard';
 import { AuthService } from './auth.service';
-import { generateResponse } from 'src/common/generic.response';
-import { EStatus } from '../../common/generic.response';
+import { LoginRequestBodyDto, LoginResponseDto } from './dto/login.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller()
+@ApiTags('auth')
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiGeneralResponse()
   @Post('validateToken')
-  validateToken(@Res() res) {
+  validateToken() {
     // already validate before handler, in JWT stagery
-    return res
-      .status(HttpStatus.OK)
-      .send(generateResponse(EStatus.SUCCESS, null));
+    return null;
   }
 
   @Public()
+  @ApiGeneralResponse(LoginResponseDto)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Req() req, @Res() res) {
+  login(
+    @Req() req,
+    @Body() body: LoginRequestBodyDto,
+  ): { accessToken: string } {
     const user = req.user;
 
     const accessToken = this.authService.generateJWT({
@@ -35,10 +41,8 @@ export class AuthController {
       username: user.username,
     });
 
-    return res.status(HttpStatus.OK).send(
-      generateResponse(EStatus.SUCCESS, {
-        accessToken,
-      }),
-    );
+    return {
+      accessToken,
+    };
   }
 }

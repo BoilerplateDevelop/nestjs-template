@@ -1,20 +1,17 @@
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-} from '@nestjs/common';
-import { UserRegisterDto } from './dto/register.dto';
+  UserRegisterRequestBodyDto,
+  UserRegisterResponseDto,
+} from './dto/register.dto';
 import { UserService } from './user.service';
 import { HashFuncUtil } from '../../utils/hash.util';
 import { Public } from '../../common/decorators/public.decorator';
-import { EStatus, generateResponse } from 'src/common/generic.response';
-import { Response } from 'express';
+import { FindUserResponseDto } from './dto/get-user.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiGeneralResponse } from 'src/common/decorators/apiGeneralResponse.decorator';
 
-@Controller()
+@ApiTags('users')
+@Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -22,27 +19,25 @@ export class UserController {
   ) {}
 
   @Public()
+  @ApiGeneralResponse(UserRegisterResponseDto)
   @Post('/register')
-  async register(@Res() res: Response, @Body() body: UserRegisterDto) {
+  async register(@Body() body: UserRegisterRequestBodyDto) {
     const hashedPassword = await this.hashFuncUtil.hashCode(body.password);
     const result = await this.userService.create({
       username: body.username,
       password: hashedPassword,
     });
 
-    return res
-      .status(HttpStatus.OK)
-      .send(generateResponse(EStatus.SUCCESS, result.raw?.[0]));
+    return result.raw?.[0];
   }
 
   @Get()
-  async findUser(@Req() req, @Res() res) {
+  @ApiGeneralResponse(FindUserResponseDto)
+  async findUser(@Req() req) {
     const user = await this.userService.findOne({
       username: req.user.username,
     });
 
-    return res
-      .status(HttpStatus.OK)
-      .send(generateResponse(EStatus.SUCCESS, user));
+    return user;
   }
 }

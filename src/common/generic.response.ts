@@ -26,7 +26,6 @@ export function generateResponse(
     rtnCode: EStatus.SUCCESS == status ? '0' : rtnCode,
     data,
   };
-
   return genericResponseInterface;
 }
 
